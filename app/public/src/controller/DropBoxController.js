@@ -2,6 +2,8 @@ class DropBoxController {
 
     constructor() {
 
+        this.onselectionchange = new Event('selectionchange');
+
         this.btnSendFileEl = document.querySelector("#btn-send-file");
         this.inputFilesEl = document.querySelector("#files");
         this.snackModalEl = document.querySelector("#react-snackbar-root");
@@ -9,6 +11,12 @@ class DropBoxController {
         this.nameFileEl = this.snackModalEl.querySelector(".filename");
         this.timeLeftEl = this.snackModalEl.querySelector(".timeleft");
         this.listFilesEl = document.querySelector("#list-of-files-and-directories");
+
+        this.btnNewFolder = document.querySelector("#btn-new-folder");
+        this.btnRename = document.querySelector("#btn-rename");
+        this.btnDelete = document.querySelector("#btn-delete");
+
+
 
         this.connectFirebase();
         this.initEvents();
@@ -34,7 +42,30 @@ class DropBoxController {
 
     }
 
+    getSelection() {
+
+        return this.listFilesEl.querySelectorAll(".selected")
+    }
+
     initEvents() {
+
+        this.listFilesEl.addEventListener('selectionchange', e => {
+
+            switch (this.getSelection().length) {
+                case 0:
+                    this.btnDelete.style.display = 'none';
+                    this.btnRename.style.display = 'none';
+                    break;
+                case 1:
+                    this.btnDelete.style.display = 'block';
+                    this.btnRename.style.display = 'block';
+                    break;
+                default:
+                    this.btnDelete.style.display = 'block';
+                    this.btnRename.style.display = 'none';
+            }
+        })
+
 
         this.btnSendFileEl.addEventListener("click", event => {
 
@@ -150,7 +181,7 @@ class DropBoxController {
 
         this.progressBarEl.style.width = `${porcent}%`;
 
-        this.nameFileEl.innerHTML = file.originalFileName;
+        this.nameFileEl.innerHTML = file.originalFilename;
         this.timeLeftEl.innerHTML = this.formatTimeToHuman(timeleft);
 
     }
@@ -198,7 +229,7 @@ class DropBoxController {
                         </g>
                     </svg>
                 `;
-            break;
+                break;
 
             case 'application/pdf':
                 return `   
@@ -238,7 +269,7 @@ class DropBoxController {
                 <div class="name text-center">PDF</div>
             </li>
                 `
-            break;
+                break;
 
             case 'audio/mp3':
             case 'audio/mpeg':
@@ -264,7 +295,7 @@ class DropBoxController {
                    </svg>
                    <div class="name text-center">Music</div>
                 `;
-            break;
+                break;
 
             case 'video/mp4':
             case 'video/wmv':
@@ -290,7 +321,7 @@ class DropBoxController {
                 </svg>
                 <div class="name text-center">Video</div>
                 `;
-            break;
+                break;
 
             case 'image/jpeg':
             case 'image/jpg':
@@ -337,9 +368,9 @@ class DropBoxController {
                 </svg>
                 <div class="name text-center">Imagem</div>
                 `;
-            break;
+                break;
 
-            default: 
+            default:
                 return `
                     <svg width="160" height="160" viewBox="0 0 160 160" class="mc-icon-template-content tile__preview tile__preview--icon">
                         <title>1357054_617b.jpg</title>
@@ -370,10 +401,10 @@ class DropBoxController {
 
         li.innerHTML = `
             ${this.getFileIconView(file)}
-            <div class="name text-center">${file.originalFileName}</div>
+            <div class="name text-center">${file.originalFilename}</div>
 
             `
-            this.initEventsLi(li);
+        this.initEventsLi(li);
 
         return li;
     }
@@ -398,9 +429,11 @@ class DropBoxController {
     }
     initEventsLi(li) {
 
-        li.addEventListener('click', e=> {
+        li.addEventListener('click', e => {
 
-            if(e.shiftKey) {
+            this.onselectionchange = new Event("selectionchange");
+
+            if (e.shiftKey) {
 
                 let firstLi = this.listFilesEl.querySelector('.selected');
 
@@ -427,6 +460,9 @@ class DropBoxController {
 
                     });
 
+                    this.listFilesEl.dispatchEvent(this.onselectionchange);
+
+
                     return true;
 
                 }
@@ -435,17 +471,17 @@ class DropBoxController {
 
             }
 
-            if(!e.ctrlKey) {
-
-                this.listFilesEl.querySelectorAll('li.selected').forEach(el=> {
-
-                    el.classList.remove('selected');
-
+            if (!e.ctrlKey) {
+                this.listFilesEl.querySelectorAll('li.selected').forEach(el => {
+                  
+                    if (el !== li) el.classList.remove('selected');
                 });
+            } 
 
-            }
+            li.classList.toggle('selected');
 
-            li.classList.toggle('selected')
+            this.listFilesEl.dispatchEvent(this.onselectionchange);
+
 
         })
 
