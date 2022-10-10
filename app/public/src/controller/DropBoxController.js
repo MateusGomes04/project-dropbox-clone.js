@@ -20,12 +20,9 @@ class DropBoxController {
     this.btnRename = document.querySelector("#btn-rename");
     this.btnDelete = document.querySelector("#btn-delete");
 
-
-
     this.connectFirebase();
     this.initEvents();
     this.openFolder();
-
 
   }
 
@@ -41,7 +38,6 @@ class DropBoxController {
       appId: "1:351186465557:web:6b0da375b1b828b6cf6f1c",
       measurementId: "G-X05GN5KF0Q"
     };
-
 
     firebase.initializeApp(firebaseConfig);
 
@@ -100,7 +96,6 @@ class DropBoxController {
       let file = JSON.parse(li.dataset.file);
       let key = li.dataset.key;
 
-
       promises.push(new Promise((resolve, reject) => {
 
 
@@ -142,7 +137,6 @@ class DropBoxController {
 
   initEvents() {
 
-
     this.btnNewFolder.addEventListener('click', e => {
 
       let name = prompt('Nome da nova pasta:');
@@ -158,7 +152,6 @@ class DropBoxController {
       }
 
     });
-
 
     this.btnDelete.addEventListener("click", e => {
       this.removeTask()
@@ -194,7 +187,6 @@ class DropBoxController {
       }
     })
 
-
     this.listFilesEl.addEventListener('selectionchange', e => {
 
       switch (this.getSelection().length) {
@@ -211,7 +203,6 @@ class DropBoxController {
           this.btnRename.style.display = 'none';
       }
     })
-
 
     this.btnSendFileEl.addEventListener("click", event => {
 
@@ -257,7 +248,6 @@ class DropBoxController {
     this.modalShow(false);
     this.inputFilesEl.value = "";
     this.btnSendFileEl.disabled = false;
-
 
   }
 
@@ -305,11 +295,9 @@ class DropBoxController {
     });
   }
 
-
   uploadTask(files) {
 
     let promises = [];
-
 
     [...files].forEach(file => {
       promises.push(new Promise((resolve, reject) => {
@@ -341,9 +329,6 @@ class DropBoxController {
 
   }
 
-
-
-
   uploadProgress(event, file) {
 
     let timespent = Date.now() - this.startUploadTime;
@@ -371,13 +356,11 @@ class DropBoxController {
       return `${hours} horas, ${minutes} minutos e ${seconds} segundos`;
     }
 
-
     if (minutes > 0) {
 
       return `${minutes} minutos e ${seconds} segundos`;
 
     }
-
 
     if (seconds > 0) {
 
@@ -570,8 +553,6 @@ class DropBoxController {
       return l1;
     }
 
-
-
     li.dataset.key = key;
     li.dataset.file = JSON.stringify(file);
     li.innerHTML = `
@@ -594,7 +575,6 @@ class DropBoxController {
 
         let key = snapshotItem.key;
         let data = snapshotItem.val();
-
 
         if (data.type) {
 
@@ -656,7 +636,6 @@ class DropBoxController {
 
     this.navEl.innerHTML = nav.innerHTML;
 
-
     this.navEl.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', e => {
         e.preventDefault();
@@ -664,21 +643,13 @@ class DropBoxController {
 
         this.currentFolder = a.dataset.path.split('/');
 
-
-
-
         this.openFolder()
       })
     })
 
-
-
-
   }
 
-
   initEventsLi(li) {
-
 
     li.addEventListener('dblclick', e => {
 
@@ -731,7 +702,6 @@ class DropBoxController {
 
           this.listFilesEl.dispatchEvent(this.onselectionchange);
 
-
           return true;
 
         }
@@ -741,7 +711,6 @@ class DropBoxController {
       if (!e.ctrlKey) {
         this.listFilesEl.querySelectorAll('li.selected').forEach(el => {
 
-
         });
       }
 
@@ -749,12 +718,8 @@ class DropBoxController {
 
       this.listFilesEl.dispatchEvent(this.onselectionchange);
 
-
     })
 
   }
-
-
-
 
 }
