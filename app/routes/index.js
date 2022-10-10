@@ -5,7 +5,7 @@ var fs = require("fs")
 
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
@@ -31,7 +31,6 @@ router.get('/file', (req, res) => {
     })
   }
 })
-
 
 router.delete("/file", (req, res) => {
   let form = new formidable.IncomingForm({
@@ -64,7 +63,7 @@ router.delete("/file", (req, res) => {
   });
 });
 
-router.post("/upload", (req,res)=>{
+router.post("/upload", (req, res) => {
 
   let form = new formidable.IncomingForm({
 
@@ -74,7 +73,7 @@ router.post("/upload", (req,res)=>{
   });
 
 
-  form.parse(req, (err, fields, files)=> {
+  form.parse(req, (err, fields, files) => {
 
     res.json({
       files
@@ -84,7 +83,7 @@ router.post("/upload", (req,res)=>{
 
   });
 
- 
+
 });
 
 module.exports = router;
